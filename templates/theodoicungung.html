@@ -1,0 +1,21 @@
+<div class="content" id="theoDoiCungUng" style="display: none">
+    <div class="row">
+        <div class="col-4">
+            <h6>Chọn thư mục Kho Chẵn:</h6>
+            <input type="file" id="directoryKhoChan" webkitdirectory directory multiple hidden>
+            <input type="text" style="width: 300px; margin-right: 20px" disabled>
+            <button class="btn btn-secondary btn-sm" onclick="chonThuMucKhoChan()">Chọn thư mục</button>
+            <ul id="listingKhoChan"></ul>
+        </div>
+        <div class="col-4">
+            <h6>Chọn thư mục Kho Lẻ:</h6>
+            <input type="file" id="directoryKhoLe" webkitdirectory directory multiple hidden>
+            <input type="text" style="width: 300px; margin-right: 20px" disabled>
+            <button class="btn btn-secondary btn-sm" onclick="chonThuMucKhoLe()">Chọn thư mục</button>
+            <ul id="listingKhoLe"></ul>
+        </div>
+        <div class="col-4"></div>
+    </div>
+    <button class="btn btn-success mt-5" style="margin-right: 10px" onclick="theodoicungung()">Cập nhật</button>
+    <button class="btn btn-primary mt-5" onclick="window.open('https://app.powerbi.com/Redirect?action=OpenReport&appId=1c65affd-5446-4174-9262-90365ff9d66f&reportObjectId=1fb9de3d-fdd2-4835-bd6c-54f3253f248f&ctid=eab3c8f8-7488-460f-a2b4-412eaddea8bf&reportPage=ReportSection&pbi_source=appShareLink&portalSessionId=931f9b96-6b69-470a-a1c8-5282f5a3e15e','_blank')">Truy cập Power Bi</button>
+</div>

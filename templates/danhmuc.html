@@ -1,0 +1,212 @@
+<div class="content" id="danhMuc" style="display: none">
+    <div class="row">
+        <div class="col-2">
+            <ul class="nav flex-column" id="navDanhMuc">
+              <li class="nav-item classDanhMuc" onclick="chonDanhMuc(1)">
+                <a class="nav-link active" aria-current="page" href="#" name="danhmucthuoc">Danh mục Thuốc</a>
+              </li>
+              <li class="nav-item classDanhMuc" onclick="chonDanhMuc(2)">
+                <a class="nav-link" href="#" name="danhmuchoatchatbenhvien">Danh mục Hoạt chất</a>
+              </li>
+              <li class="nav-item classDanhMuc" onclick="chonDanhMuc(3)">
+                <a class="nav-link" href="#" name="danhmucnhomduoclycap1">Danh mục Nhóm Dược lý</a>
+              </li>
+              <li class="nav-item classDanhMuc" onclick="chonDanhMuc(4)">
+                <a class="nav-link" href="#" name="danhmucnhomhoaduoc1">Danh mục Nhóm Hoá dược</a>
+              </li>
+              <li class="nav-item classDanhMuc" onclick="chonDanhMuc(5)">
+                <a class="nav-link" href="#" name="danhmuchamluong">Danh mục Hàm lượng</a>
+              </li>
+              <li class="nav-item classDanhMuc" onclick="chonDanhMuc(6)">
+                <a class="nav-link" href="#" name="danhmucduongdung">Danh mục Đường dùng</a>
+              </li>
+              <li class="nav-item classDanhMuc" onclick="chonDanhMuc(7)">
+                <a class="nav-link" href="#" name="danhmucdangbaoche">Danh mục Dạng bào chế</a>
+              </li>
+              <li class="nav-item classDanhMuc" onclick="chonDanhMuc(8)">
+                <a class="nav-link" href="#" name="danhmucquycachdonggoi">Danh mục Quy cách đóng gói</a>
+              </li>
+              <li class="nav-item classDanhMuc" onclick="chonDanhMuc(9)">
+                <a class="nav-link" href="#" name="danhmucdonvitinh">Danh mục Đơn vị tính</a>
+              </li>
+              <li class="nav-item classDanhMuc" onclick="chonDanhMuc(10)">
+                <a class="nav-link" href="#" name="danhmuccososanxuat">Danh mục Cơ sở sản xuất</a>
+              </li>
+              <li class="nav-item classDanhMuc" onclick="chonDanhMuc(11)">
+                <a class="nav-link" href="#" name="danhmucnuocsanxuat">Danh mục Nước sản xuất</a>
+              </li>
+              <li class="nav-item classDanhMuc" onclick="chonDanhMuc(12)">
+                <a class="nav-link" href="#" name="danhmucnhathau">Danh mục Nhà thầu trúng thầu</a>
+              </li>
+              <li class="nav-item classDanhMuc" onclick="chonDanhMuc(13)">
+                <a class="nav-link" href="#" name="danhmucnhomthau">Danh mục Nhóm thầu</a>
+              </li>
+            </ul>
+        </div>
+        <div class="col-10">
+<!--            <input type="text" class="form-control mb-3">-->
+            <div class="danhMuc">
+                <table class="table table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px">STT</th>
+                            <th>Thuốc</th>
+                            <th style="display: none">ID</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="danhMuc">
+                <table class="table table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px">STT</th>
+                            <th style="width: 150px">Mã hoạt chất</th>
+                            <th style="width: 100px">STT TT20</th>
+                            <th>Hoạt chất</th>
+                            <th>Nhóm Dược lý</th>
+                            <th>Nhóm Hoá dược</th>
+                            <th style="display: none">ID</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="danhMuc">
+                <table class="table table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px">STT</th>
+                            <th>Nhóm Dược lý</th>
+                            <th style="display: none">ID</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="danhMuc">
+                <table class="table table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px">STT</th>
+                            <th>Nhóm Hoá dược</th>
+                            <th style="display: none">ID</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="danhMuc">
+                <table class="table table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px">STT</th>
+                            <th>Hàm lượng</th>
+                            <th style="display: none">ID</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="danhMuc">
+                <table class="table table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px">STT</th>
+                            <th>Dường dùng</th>
+                            <th style="display: none">ID</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="danhMuc">
+                <table class="table table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px">STT</th>
+                            <th>Dạng bào chế</th>
+                            <th style="display: none">ID</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="danhMuc">
+                <table class="table table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px">STT</th>
+                            <th>Quy cách đóng gói</th>
+                            <th style="display: none">ID</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="danhMuc">
+                <table class="table table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px">STT</th>
+                            <th>Đơn vị tính</th>
+                            <th style="display: none">ID</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="danhMuc">
+                <table class="table table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px">STT</th>
+                            <th>Cơ sở sản xuất</th>
+                            <th style="display: none">ID</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="danhMuc">
+                <table class="table table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px">STT</th>
+                            <th>Nước sản xuất</th>
+                            <th style="display: none">ID</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="danhMuc">
+                <table class="table table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px">STT</th>
+                            <th>Nhà thầu trúng thầu</th>
+                            <th style="display: none">ID</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="danhMuc" style="max-height: 400px; overflow: auto">
+                <table class="table table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px">STT</th>
+                            <th>Nhóm thầu</th>
+                            <th style="display: none">ID</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <button class="btn btn-success btn-sm mt-5" style="width: 100px; margin-right: 10px" onclick="gopGiaTri()">Gộp dữ liệu</button>
+<!--            <button class="btn btn-primary btn-sm mt-5" style="width: 100px" onclick="luuThayDoi()">Lưu thay đổi</button>-->
+        </div>
+    </div>
+</div>

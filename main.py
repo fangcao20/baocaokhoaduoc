@@ -11,6 +11,7 @@ mycursor = mydb.cursor()
 
 
 def capitalize_words(s):
+    s = s.strip()
     words = s.split()
     capitalized_words = [word.capitalize() for word in words]
     return ' '.join(capitalized_words)
@@ -191,7 +192,6 @@ def check_date_modified(path):
 
     df = pd.read_excel(path)
     headers = df.columns.tolist()
-    print(headers)
     ten_thuoc = capitalize_words(headers[2].split(' : ')[1].strip())
     ma_thau = headers[4].split(' : ')[1].strip()
     mycursor.execute('select idThuoc from thuoc where tenThuoc = %s', (ten_thuoc,))
@@ -270,7 +270,6 @@ def mergeDuLieu():
     results = mycursor.fetchall()
     idFiles = [r[0] for r in results]
     for idFile in idFiles:
-        print(idFile)
         mycursor.execute('select ngay, nhap from khochan where idFile = %s and nhap > 0', (idFile,))
         ngayNhapChans = mycursor.fetchall()
 
@@ -334,7 +333,6 @@ def mergeDuLieu():
                         tonle = rs[index][1]
 
                     conlai -= nhapChan
-                    print(tongdutru)
                     mycursor.execute('''insert into thongke(ngaynhapchan, tenthuoc, hoatchat, lothau, mathau, nhapchan, tonle, 
                     dutruconlai, tongdutru, trungbinhnhapchan) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)''',
                                      (ngayNhapChan, tenThuoc, hoatChat, loThau, maThau, nhapChan, tonle, conlai, tongdutru,

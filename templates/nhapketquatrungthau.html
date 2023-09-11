@@ -1,0 +1,206 @@
+<div class="content" id="ketQuaTrungThau" style="display: block">
+    <div class="row">
+        <div class="col-2">
+            <ul class="nav flex-column" id="navKetQuaTrungThau">
+              <li class="nav-item" onclick="divDotThau()">
+                <a class="nav-link active" aria-current="page" href="#">Đợt thầu</a>
+              </li>
+              <li class="nav-item" onclick="divKQTT()">
+                <a class="nav-link" href="#">Kết quả trúng thầu</a>
+              </li>
+              <li class="nav-item" onclick="divBaoCaoTongHop()">
+                <a class="nav-link" href="#">Báo cáo tổng hợp KQTT</a>
+              </li>
+            </ul>
+        </div>
+        <div class="col-10">
+            <div id="nhapDotThau" class="navCon" style="display: block">
+                <form id="formNhapDotThau">
+                    <table class="table table-borderless table-sm">
+                        <tr>
+                            <th>Mã đợt thầu</th>
+                            <td>
+                                <input class="form-control" list="datalistMaDotThau" type="text" name="maDotThau" id="maDotThau">
+                                <datalist id="datalistMaDotThau"></datalist>
+                            </td>
+                            <th>Tên đợt thầu</th>
+                            <td>
+                                <input class="form-control" type="text" name="tenDotThau" id="tenDotThau">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Giai đoạn</th>
+                            <td>
+                                <input class="form-control" type="text" name="giaiDoan" id="giaiDoan">
+                            </td>
+                            <th>Hình thức đấu thầu</th>
+                            <td>
+                                <select class="form-select" name="hinhThucDauThau" id="hinhThucDauThau">
+                                    <option value="Đấu thầu rộng rãi">Đấu thầu rộng rãi</option>
+                                    <option value="Đấu thầu hạn chế">Đấu thầu hạn chế</option>
+                                    <option value="Chỉ định thầu">Chỉ định thầu</option>
+                                    <option value="Chào hàng cạnh tranh">Chào hàng cạnh tranh</option>
+                                    <option value="Mua sắm trực tiếp">Mua sắm trực tiếp</option>
+                                    <option value="Tự thực hiện">Tự thực hiện</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Gói mua sắm</th>
+                            <td>
+                                <input class="form-control" type="text" name="goiMuaSam" id="goiMuaSam">
+                            </td>
+                            <th>Số QĐ</th>
+                            <td>
+                                <input class="form-control" type="text" name="soQD" id="soQD">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Ngày QĐ</th>
+                            <td>
+                                <input class="form-control" type="date" name="ngayQD" id="ngayQD">
+                            </td>
+                            <th>Ngày hết hạn</th>
+                            <td>
+                                <input class="form-control" type="date" name="ngayHetHan" id="ngayHetHan">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Tên Bệnh viện</th>
+                            <td>
+                                <input class="form-control" type="text" list="datalistBenhVien" name="tenBenhVien" id="tenBenhVien">
+                                <datalist id="datalistBenhVien">
+
+                                </datalist>
+                            </td>
+                            <th>Ghi chú</th>
+                            <td>
+                                <input class="form-control" type="text" name="ghiChu" id="ghiChu">
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="mb-3">
+                        <button type="reset" class="btn btn-secondary btn-sm" style="width: 100px">Xoá trắng</button>
+                        <button type="button" class="btn btn-primary btn-sm" style="width: 100px" onclick="btnThemDotThau()">Thêm mới</button>
+                        <button type="button" class="btn btn-success btn-sm" style="width: 100px" onclick="btnCapNhatDotThau()">Cập nhật</button>
+                        <button type="button" class="btn btn-danger btn-sm" style="width: 100px" onclick="btnXoaDotThau()">Xoá</button>
+                    </div>
+                </form>
+                <div style="max-height: 450px; overflow: auto">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>STT</th>
+                                <th>Mã đợt thầu</th>
+                                <th>Tên đợt thầu</th>
+                                <th>Giai đoạn</th>
+                                <th>Hình thức đấu thầu</th>
+                                <th>Gói mua sắm</th>
+                                <th>Số QĐ</th>
+                                <th>Ngày QĐ</th>
+                                <th>Ngày hết hạn</th>
+                                <th>Tên Bệnh viện</th>
+                                <th>Ghi chú</th>
+                                <th style="display: none">ID</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bodyDotThau"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="nhapKetQuaTrungThau" class="navCon" style="display: none">
+                <div class="row">
+                    <h6>Thông tin chung</h6>
+                    <table class="table table-borderless table-sm" id="tableNhapThongTinChung">
+                        <tr>
+                            <td>Mã đợt thầu</td>
+                            <td><select class="form-select" id="slMaDotThau" onchange="changeSlMaDotThau()"></select></td>
+                            <td>Đợt thầu</td>
+                            <td><input type="text" id="slDotThau" class="form-control" disabled readonly></td>
+                            <td>Giai đoạn</td>
+                            <td><input type="text" id="slGiaiDoan" class="form-control" disabled readonly></td>
+                        </tr>
+                        <tr>
+                            <td>Hình thức đấu thầu</td>
+                            <td><input type="text" id="slHinhThucDauThau" class="form-control" disabled readonly></td>
+                            <td>Gói mua sắm</td>
+                            <td><input type="text" id="slGoiMuaSam" class="form-control" disabled readonly></td>
+                            <td>Tên Bệnh viện</td>
+                            <td><input type="text" id="slTenBenhVien" class="form-control" disabled readonly></td>
+                        </tr>
+                        <tr>
+                            <td>Số QĐ</td>
+                            <td><input type="text" id="slSoQD" class="form-control" disabled readonly></td>
+                            <td>Ngày QĐ</td>
+                            <td><input type="text" id="slNgayQD" class="form-control" disabled readonly></td>
+                            <td>Ngày hết hạn</td>
+                            <td><input type="text" id="slNgayHetHan" class="form-control" disabled readonly></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="row mt-3">
+                    <h6>Chi tiết thuốc</h6>
+                    <div style="max-height: 500px; overflow: auto">
+                        <table class="table table-sm table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>STT</th>
+                                    <th style="min-width: 150px">Tên thuốc</th>
+                                    <th style="min-width: 150px">Hoạt chất</th>
+                                    <th style="min-width: 100px">Hàm lượng</th>
+                                    <th style="min-width: 100px">SĐK</th>
+                                    <th style="min-width: 120px">Đường dùng</th>
+                                    <th style="min-width: 150px">Dạng bào chế</th>
+                                    <th style="min-width: 200px">Quy cách đóng gói</th>
+                                    <th style="min-width: 150px">Đơn vị tính</th>
+                                    <th style="min-width: 200px">Cơ sở sản xuất</th>
+                                    <th style="min-width: 150px">Nước sản xuất</th>
+                                    <th style="min-width: 200px">Nhà thầu trúng thầu</th>
+                                    <th style="min-width: 100px">Nhóm thầu</th>
+                                    <th style="min-width: 100px">Số lượng</th>
+                                    <th style="min-width: 100px">Đơn giá</th>
+                                    <th style="min-width: 100px">Thành tiền</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableChiTietThuoc">
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-2">
+                        <button id="importButton" class="btn btn-sm btn-primary mt-2" style="width: 200px">Import dữ liệu</button>
+                        <button class="btn btn-success btn-sm mt-2" style="width: 100px" onclick="luuChiTietThuoc()">Lưu</button>
+                        <input id='inputFile' accept=".xlsx, .xls" type='file' name='filename' hidden/>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <h6>Lịch sử Import dữ liệu</h6>
+                    <div style="max-height: 200px; overflow: auto">
+                        <table class="table table-hover table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Mã đợt thầu</th>
+                                    <th>Thời gian</th>
+                                    <th style="display: none">ID</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableLichSu">
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                        <button class="btn btn-sm btn-danger mt-3" style="width: 100px" onclick="xoaDuLieuImport()">Xoá dữ liệu</button>
+                    </div>
+                </div>
+            </div>
+            <div id="baoCaoTongHop" class="navCon" style="display: none">
+                <div class="row">
+
+                </div>
+                <div style="height: 600px;" class="ag-theme-alpine" id="exampleGrid">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
