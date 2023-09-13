@@ -26,7 +26,7 @@ def index():
             danhMucDict = xuatDanhMuc()
             ketQuaList = xuatKetQuaTrungThau()
             return jsonify(danhMucDict=danhMucDict, ketQuaList=ketQuaList)
-        if 'cungung' in dt:
+        if 'cungUng' in dt:
             mergeDuLieuKho()
         if 'suaDanhMuc' in dt:
             data = dt['suaDanhMuc']

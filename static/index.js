@@ -616,7 +616,7 @@ function fileKho(files, output) {
 }
 
 function theodoicungung() {
-    sendData({'cungung': ''});
+    sendData({'cungUng': ''});
 }
 
 // Phân tích ABC/VEN
