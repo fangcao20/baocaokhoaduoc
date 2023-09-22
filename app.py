@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 from database import nhapKetQuaTrungThau, xuatKetQuaTrungThau, xuatDanhMuc, gopDuLieu, saveFileInfo, mergeDuLieuKho, \
     nhapDuLieuABCVEN, suaDanhMuc, nhapDotThau, selectDotThau, updateDotThau, thongTinTheoMaDotThau, \
-    xuatLichSuImport, nhapLichSuImport, xoaDuLieuImport
+    xuatLichSuImport, nhapLichSuImport, xoaDuLieuImport, theoDoiCungUng
 
 app = Flask(__name__)
 
@@ -15,8 +15,9 @@ def index():
             ketQuaList = xuatKetQuaTrungThau()
             maDotThau = selectDotThau('maDotThau')
             lichSuImport = xuatLichSuImport()
+            ketQuaCungUng = theoDoiCungUng()
             return jsonify(ketQuaList=ketQuaList, danhMucDotThau=danhMucDotThau, maDotThau=maDotThau,
-                           lichSuImport=lichSuImport)
+                           lichSuImport=lichSuImport, ketQuaCungUng=ketQuaCungUng)
         if 'dm' in dt:
             danhMucDict = xuatDanhMuc()
             return jsonify(danhMucDict=danhMucDict)
@@ -28,6 +29,9 @@ def index():
             return jsonify(danhMucDict=danhMucDict, ketQuaList=ketQuaList)
         if 'cungUng' in dt:
             mergeDuLieuKho()
+            ketQuaCungUng = theoDoiCungUng()
+            message = 'Cập nhật thành công.'
+            return jsonify(message=message, ketQuaCungUng=ketQuaCungUng)
         if 'suaDanhMuc' in dt:
             data = dt['suaDanhMuc']
             dm = data[-1]

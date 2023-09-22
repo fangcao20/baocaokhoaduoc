@@ -1,13 +1,13 @@
 import pandas as pd
 import mysql.connector as connector
 from datetime import datetime, timedelta
-import locale
 
-mydb = connector.connect(user='root', password='Phiphi05',
-                         host='localhost',
-                         database='baocaokhoaduoc')
-
-locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+mydb = connector.connect(user='duocbenh_duocbenh', password='PhuongThao5=))',
+                         host='112.213.89.194',
+                         database='duocbenh_baocaokhoaduoc')
+# mydb = connector.connect(user='root', password='Phiphi05',
+#                          host='localhost',
+#                          database='baocaokhoaduoc')
 
 
 def capitalize_words(s):
@@ -26,9 +26,11 @@ def checkkitu(input_string):
 def checkDanhMuc(record, col, danhmuc):
     mycursor = mydb.cursor()
     colCCH = col + 'CCH'
-    if isinstance(record, str):
-        record = checkkitu(record.lower())
-        mycursor.execute(f"SELECT * FROM {danhmuc} WHERE LOWER({colCCH}) LIKE '%;{record};%'")
+    record = checkkitu(str(record).lower())
+    if 'danhmuc' in danhmuc:
+        mycursor.execute(f"SELECT * FROM {danhmuc} WHERE LOWER({colCCH}) LIKE %s", (f"%;{record};%",))
+    else:
+        mycursor.execute(f'SELECT * FROM {danhmuc} where {col} = %s', (record,))
     results = mycursor.fetchall()
     if results:
         if danhmuc == 'danhmuchoatchatbenhvien':
@@ -68,7 +70,7 @@ def getId(record, colId, colName, danhmuc):
     colNameCCH = colName + 'CCH'
     mycursor = mydb.cursor()
     record = checkkitu(record)
-    mycursor.execute(f'select {colId} from {danhmuc} where {colNameCCH} like "%;{record};%"')
+    mycursor.execute(f'select {colId} from {danhmuc} where {colNameCCH} like %s', (f"%;{record};%",))
     result = mycursor.fetchall()
     mycursor.close()
     if not result:
@@ -123,9 +125,9 @@ def nhapKetQuaTrungThau(dt, idLichSu):
         else:
             idNhomDuocLyCap1 = None
             idNhomHoaDuoc1 = None
-        soLuong = int(row[13].replace(',', ''))
-        donGia = int(row[14].replace(',', ''))
-        thanhTien = int(row[15].replace(',', ''))
+        soLuong = float(row[13].replace(',', ''))
+        donGia = float(row[14].replace(',', ''))
+        thanhTien = float(row[15].replace(',', ''))
 
         values = (idThuoc, idHoatChat, idNhomDuocLyCap1, idNhomHoaDuoc1, idHamLuong, idSDK, idDuongDung, idDangBaoChe,
                   idQuyCachDongGoi, idDonViTinh, idCoSoSanXuat, idNuocSanXuat, idNhaThau, idNhomThau, soLuong, donGia,
@@ -176,9 +178,12 @@ def xuatKetQuaTrungThau():
         idNuocSanXuat = getValue(row[12], "idNuocSanXuat", 'nuocSanXuat', 'danhmucnuocsanxuat')
         idNhaThau = getValue(row[13], "idNhaThau", 'nhaThau', 'danhmucnhathau')
         idNhomThau = getValue(row[14], "idNhomThau", 'nhomThau', 'danhmucnhomthau')
-        soLuong = locale.format_string('%d', row[15], grouping=True)
-        donGia = locale.format_string('%d', row[16], grouping=True)
-        thanhTien = locale.format_string('%d', row[17], grouping=True)
+        # soLuong = locale.format_string('%d', row[15], grouping=True)
+        # donGia = locale.format_string('%d', row[16], grouping=True)
+        # thanhTien = locale.format_string('%d', row[17], grouping=True)
+        soLuong = row[15]
+        donGia = row[16]
+        thanhTien = row[17]
         idDotThau = getValue(row[18], "idDotThau", 'maDotThau', 'danhmucdotthau')
 
         mycursor.execute(
@@ -258,7 +263,6 @@ def gopDuLieu(data):
 
     if 'sttTT20' not in gopHoatChat:
         for i in range(len(rowIdList) - 1):
-            print(rowIdList[i], lastID)
             mycursor.execute(f'update ketquatrungthau set {idCol} = %s where {idCol} = %s', (lastID, rowIdList[i]))
             mycursor.execute(f'select {colCCH} from {danhmuc} where {idCol} = %s', (rowIdList[i],))
             colCCH_value = mycursor.fetchall()
@@ -272,15 +276,12 @@ def gopDuLieu(data):
                          (sttTT20,))
         idNhomDuocLyCap1, idNhomHoaDuoc1 = mycursor.fetchall()[0]
         idRowSTTTT20 = gopHoatChat['idRowSTTTT20']
-        print(rowIdList, idRowSTTTT20)
         mycursor.execute(f'select {colCCH} from {danhmuc} where {idCol} = %s', (idRowSTTTT20,))
         colCCH_value_idRowSTTTT20 = mycursor.fetchall()[0][0]
         for i in range(len(rowIdList)):
-            print(idRowSTTTT20, rowIdList[i])
             mycursor.execute(f'update ketquatrungthau set {idCol} = %s, idNhomDuocLyCap1 = %s, idNhomHoaDuoc1 = %s '
                              f'where {idCol} = %s', (idRowSTTTT20, idNhomDuocLyCap1, idNhomHoaDuoc1, rowIdList[i]))
             if rowIdList[i] != idRowSTTTT20:
-                print(rowIdList[i])
                 mycursor.execute(f'select {colCCH} from {danhmuc} where {idCol} = %s', (rowIdList[i],))
                 colCCH_value = mycursor.fetchall()
                 colCCH_value_idRowSTTTT20 += f';{colCCH_value};'
@@ -300,7 +301,8 @@ def saveFileInfo(files, dates):
         if not checkDanhMuc(name, 'fileName', 'fileinfo'):
             mycursor.execute('insert into fileinfo(fileName, modifiedDate) values (%s, %s)', (name, date))
             idFile = mycursor.lastrowid
-            nhapDuLieuKho(idFile, file)
+            if not nhapDuLieuKho(idFile, file):
+                mycursor.execute('delete from fileinfo where idFile = %s', (idFile,))
         else:
             mycursor.execute('select idFile, modifiedDate from fileinfo where fileName = %s', (name,))
             idFile, modifiedDate = mycursor.fetchall()[0]
@@ -318,12 +320,19 @@ def nhapDuLieuKho(idFile, file):
     headers = df.columns.tolist()
     tenThuoc = headers[2].split(' : ')[1].strip().lower()
     mycursor.execute('select idThuoc from danhmucthuoc where lower(tenThuoc) = %s', (tenThuoc,))
-    idThuoc = mycursor.fetchall()[0][0]
-    if "kho chẵn" in file.filename.lower():
-        insertKho(df, "khochan", idThuoc, idFile)
+    result = mycursor.fetchall()
+    if result:
+        idThuoc = result[0][0]
+        if "kho chẵn" in file.filename.lower():
+            insertKho(df, "khochan", idThuoc, idFile)
+        else:
+            insertKho(df, "khole", idThuoc, idFile)
+        mycursor.close()
+        return True
     else:
-        insertKho(df, "khole", idThuoc, idFile)
-    mycursor.close()
+        print(f'Không có thuốc {tenThuoc} trong danhmuc')
+        mycursor.close()
+        return False
 
 
 def insertKho(df, loaikho, idThuoc, idFile):
@@ -344,7 +353,7 @@ def insertKho(df, loaikho, idThuoc, idFile):
 
 def mergeDuLieuKho():
     mycursor = mydb.cursor()
-    mycursor.execute('truncate table danhsachthau')
+    mycursor.execute('truncate table tonghopthau')
     mycursor.execute('truncate table thongkekho')
 
     mycursor.execute('select distinct idThuoc from khochan')
@@ -352,84 +361,96 @@ def mergeDuLieuKho():
     idThuocList = [r[0] for r in results]
     for idThuoc in idThuocList:
         if checkDanhMuc(idThuoc, 'idThuoc', 'khole'):
-            mycursor.execute('select idSoQD, soLuong from ketquatrungthau where idThuoc = %s', (idThuoc,))
-            idSoQD, tongKeHoach = mycursor.fetchall()[0]
-            # Bảng Thống kê kho
-            duTruConLai = tongKeHoach
-            mycursor.execute('select ngay, nhap from khochan where idThuoc = %s and nhap > 0', (idThuoc,))
-            results = mycursor.fetchall()
-            ngayNhapChanList = []
-            nhapChanList = []
-            sumNhapChan = 0
-            nhapChanCungNgay = 0
-            trungBinhNhapChan = 0
-            for r in results:
-                nhapChanList.append(r[1])
-                ngayNhapChanList.append(r[0])
-            mycursor.execute('select ngay, ton from khole where idThuoc = %s', (idThuoc,))
-            results = mycursor.fetchall()
-            tonLeList = []
-            ngayTonLeList = []
-            soLanNhap = 0
-            for r in results:
-                tonLeList.append(r[1])
-                ngayTonLeList.append(r[0])
-            for i in range(len(ngayNhapChanList)):
-                ngay = ngayNhapChanList[i]
-                nhap = nhapChanList[i]
-                nhapChanCungNgay += nhap
-                if i < len(ngayNhapChanList) - 1:
-                    if ngay == ngayNhapChanList[i + 1]:
-                        continue
+            try:
+                mycursor.execute('select sum(soLuong) from ketquatrungthau where idThuoc = %s', (idThuoc,))
+                tongKeHoach = mycursor.fetchall()[0][0]
+                print(idThuoc, tongKeHoach)
+                mycursor.execute('''
+                    select dt.ngayQD 
+                    from ketquatrungthau as kq
+                    left join danhmucdotthau as dt on kq.idDotThau = dt.idDotThau
+                    where kq.idThuoc = %s
+                    order by dt.ngayQD desc limit 1;
+                ''', (idThuoc,))
+                ngayThau = mycursor.fetchall()[0][0]
+                print(ngayThau)
+                # Bảng Thống kê kho
+                duTruConLai = tongKeHoach
+                mycursor.execute('select ngay, nhap from khochan where idThuoc = %s and nhap > 0', (idThuoc,))
+                results = mycursor.fetchall()
+                ngayNhapChanList = []
+                nhapChanList = []
+                sumNhapChan = 0
+                nhapChanCungNgay = 0
+                trungBinhNhapChan = 0
+                for r in results:
+                    nhapChanList.append(r[1])
+                    ngayNhapChanList.append(r[0])
+                mycursor.execute('select ngay, ton from khole where idThuoc = %s', (idThuoc,))
+                results = mycursor.fetchall()
+                tonLeList = []
+                ngayTonLeList = []
+                soLanNhap = 0
+                for r in results:
+                    tonLeList.append(r[1])
+                    ngayTonLeList.append(r[0])
+                for i in range(len(ngayNhapChanList)):
+                    ngay = ngayNhapChanList[i]
+                    nhap = nhapChanList[i]
+                    nhapChanCungNgay += nhap
+                    if i < len(ngayNhapChanList) - 1:
+                        if ngay == ngayNhapChanList[i + 1]:
+                            continue
+                        else:
+                            nhap = nhapChanCungNgay
+                            soLanNhap += 1
+                            nhapChanCungNgay = 0
                     else:
-                        nhap = nhapChanCungNgay
-                        soLanNhap += 1
-                        nhapChanCungNgay = 0
-                else:
-                    soLanNhap = len(set(ngayNhapChanList))
-                sumNhapChan += nhap
-                trungBinhNhapChan = int(round(sumNhapChan / soLanNhap, 0))
+                        soLanNhap = len(set(ngayNhapChanList))
+                    sumNhapChan += nhap
+                    trungBinhNhapChan = int(round(sumNhapChan / soLanNhap, 0))
 
-                ngayNhapChan = ngay
-                if ngay <= ngayTonLeList[0]:
-                    tonLe = 0
-                    closest_date = ngay
-                elif ngay in ngayTonLeList:
-                    index = ngayTonLeList.index(ngay) - 1
-                    closest_date = ngayTonLeList[index]
-                    tonLe = tonLeList[index]
-                else:
-                    while ngay not in ngayTonLeList:
-                        ngay = ngay - timedelta(days=1)
-                    index = None
-                    for idx in range(len(ngayTonLeList) - 1, -1, -1):
-                        if ngayTonLeList[idx] == ngay:
-                            index = idx
-                            break
+                    ngayNhapChan = ngay
+                    if ngay <= ngayTonLeList[0]:
+                        tonLe = 0
+                        closest_date = ngay
+                    elif ngay in ngayTonLeList:
+                        index = ngayTonLeList.index(ngay) - 1
+                        closest_date = ngayTonLeList[index]
+                        tonLe = tonLeList[index]
+                    else:
+                        while ngay not in ngayTonLeList:
+                            ngay = ngay - timedelta(days=1)
+                        index = None
+                        for idx in range(len(ngayTonLeList) - 1, -1, -1):
+                            if ngayTonLeList[idx] == ngay:
+                                index = idx
+                                break
 
-                    closest_date = ngayTonLeList[index]
-                    tonLe = tonLeList[index]
-                duTruConLai -= nhap
-                mycursor.execute('''insert into thongkekho(ngayNhapChan, idThuoc, nhapChan, tonLeTruocNhapChan,
-                trungBinhNhapChan, duTruConLai) values (%s, %s, %s, %s, %s, %s)''',
-                                 (ngayNhapChan, idThuoc, nhap, tonLe, trungBinhNhapChan, duTruConLai))
+                        closest_date = ngayTonLeList[index]
+                        tonLe = tonLeList[index]
+                    duTruConLai -= nhap
+                    mycursor.execute('''insert into thongkekho(ngayNhapChan, idThuoc, nhapChan, tonLeTruocNhapChan,
+                    trungBinhNhapChan, duTruConLai) values (%s, %s, %s, %s, %s, %s)''',
+                                     (ngayNhapChan, idThuoc, nhap, tonLe, trungBinhNhapChan, duTruConLai))
+                    # Bảng Danh sách thầu
 
-                # Bảng Danh sách thầu
-            mycursor.execute('select ngayQD from danhmucsoqd where idSoQD = %s', (idSoQD,))
-            ngayThau = mycursor.fetchall()[0][0]
-            mycursor.execute('select sum(nhap) from khochan where idThuoc = %s', (idThuoc,))
-            tongSuDung = mycursor.fetchall()[0][0]
-            conLai = tongKeHoach - tongSuDung
-            mycursor.execute('select ton from khole where idThuoc = %s order by ngay desc limit 1', (idThuoc,))
-            tonLeCuoiCung = mycursor.fetchall()[0][0]
-            mycursor.execute('select nhap from khole where idThuoc = %s and nhap > 0 order by ngay desc limit 1',
-                             (idThuoc,))
-            nhapLeCuoiCung = mycursor.fetchall()[0][0]
-            soLanDuTru = round(conLai / trungBinhNhapChan, 2)
-            mycursor.execute('''insert into danhsachthau(ngayThau, idThuoc, tongKeHoach, tongSuDung, conLai, nhapLeCuoiCung,
-            tonLeCuoiCung, trungBinhNhapChanCuoiCung, soLanDuTru) values (%s, %s, %s, %s, %s, %s, %s, %s, %s)''',
-                             (ngayThau, idThuoc, tongKeHoach, tongSuDung, conLai, nhapLeCuoiCung, tonLeCuoiCung,
-                              trungBinhNhapChan, soLanDuTru))
+                mycursor.execute('select sum(nhap) from khochan where idThuoc = %s', (idThuoc,))
+                tongSuDung = mycursor.fetchall()[0][0]
+                conLai = tongKeHoach - tongSuDung
+                mycursor.execute('select ton from khole where idThuoc = %s order by ngay desc limit 1', (idThuoc,))
+                tonLeCuoiCung = mycursor.fetchall()[0][0]
+                mycursor.execute('select nhap from khole where idThuoc = %s and nhap > 0 order by ngay desc limit 1',
+                                 (idThuoc,))
+                nhapLeCuoiCung = mycursor.fetchall()[0][0]
+                soLanDuTru = round(conLai / trungBinhNhapChan, 2)
+                mycursor.execute('''insert into tonghopthau(ngayThau, idThuoc, tongKeHoach, tongSuDung, conLai, nhapLeCuoiCung,
+                tonLeCuoiCung, trungBinhNhapChanCuoiCung, soLanDuTru) values (%s, %s, %s, %s, %s, %s, %s, %s, %s)''',
+                                 (ngayThau, idThuoc, tongKeHoach, tongSuDung, conLai, nhapLeCuoiCung, tonLeCuoiCung,
+                                  trungBinhNhapChan, soLanDuTru))
+            except Exception as e:
+                print(e, idThuoc)
+
     mydb.commit()
     mycursor.close()
 
@@ -605,3 +626,52 @@ def nhapLichSuImport(data):
     mydb.commit()
     mycursor.close()
     return idLichSu
+
+
+def theoDoiCungUng():
+    mycursor = mydb.cursor()
+    ketQua = {}
+    danhsachthaulist = []
+    mycursor.execute('''
+    with last_kqs as (select * from ketquatrungthau where idKetQua in (select max(idKetQua) from ketquatrungthau group by idThuoc))
+
+    SELECT th.ngayThau, th.tongKeHoach, th.tongSuDung, th.conLai, th.nhapLeCuoiCung, th.tonLeCuoiCung, th.trungBinhNhapChanCuoiCung, th.soLanDuTru,
+            t.idThuoc, t.tenThuoc, hc.hoatChat, dl.nhomDuocLyCap1, hd.nhomHoaDuoc1, nt.nhomThau
+            FROM tonghopthau as th
+            left join danhmucthuoc as t on th.idThuoc = t.idThuoc
+            left join last_kqs AS kq on th.idThuoc = kq.idThuoc
+            left join danhmuchoatchatbenhvien as hc on kq.idHoatChat = hc.idHoatChat
+            left join danhmucnhomduoclycap1 as dl on hc.idNhomDuocLyCap1 = dl.idNhomDuocLyCap1
+            left join danhmucnhomhoaduoc1 as hd on hc.idNhomHoaDuoc1 = hd.idNhomHoaDuoc1
+            left join danhmucnhomthau as nt on kq.idNhomThau = nt.idNhomThau
+    ''')
+    ketQua['danhsachthau'] = mycursor.fetchall()
+
+    mycursor.execute('''
+        SELECT
+            DATE_FORMAT(ngayNhapChan, '%Y-%m') as month,
+            t.tenThuoc,
+            SUM(tk.nhapChan) AS nhapChanTheoThang
+        FROM thongkekho as tk
+        left join danhmucthuoc as t on t.idThuoc = tk.idThuoc
+        GROUP BY tk.idThuoc, DATE_FORMAT(ngayNhapChan, '%Y-%m')
+        ORDER BY tk.idThuoc, STR_TO_DATE(month, '%Y/%m')
+            ''')
+    ketQua['suDungTheoThang'] = mycursor.fetchall()
+
+    mycursor.execute('''
+        WITH LastestDates AS ( SELECT th.idThuoc, MAX(dt.ngayQD) AS maxNgayQD 
+        FROM tonghopthau AS th LEFT JOIN ketquatrungthau AS kq ON kq.idThuoc = th.idThuoc 
+        LEFT JOIN danhmucdotthau AS dt ON dt.idDotThau = kq.idDotThau GROUP BY th.idThuoc ) 
+        SELECT t.tenThuoc, hc.hoatChat, kq.soLuong, dt.ngayQD FROM tonghopthau AS th 
+        LEFT JOIN danhmucthuoc AS t ON t.idThuoc = th.idThuoc 
+        LEFT JOIN ketquatrungthau AS kq ON kq.idThuoc = th.idThuoc 
+        LEFT JOIN danhmuchoatchatbenhvien AS hc ON kq.idHoatChat = hc.idHoatChat 
+        LEFT JOIN danhmucdotthau AS dt ON dt.idDotThau = kq.idDotThau 
+        WHERE (th.idThuoc, dt.ngayQD) IN (SELECT idThuoc, maxNgayQD FROM LastestDates);''')
+    ketQua['danhsachthuoc'] = mycursor.fetchall()
+
+    mycursor.execute('select * from thongkekho')
+    ketQua['thongkekho'] = mycursor.fetchall()
+    mycursor.close()
+    return ketQua

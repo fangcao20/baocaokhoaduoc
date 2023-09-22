@@ -1,0 +1,20 @@
+<div class="content" id="nhapKetQuaSuDung" style="display: none">
+    <div class="row">
+        <div class="col-4">
+            <h6>Chọn thư mục Kho Chẵn:</h6>
+            <input type="file" id="directoryKhoChan" webkitdirectory directory multiple hidden>
+            <input type="text" style="width: 300px; margin-right: 20px" disabled>
+            <button class="btn btn-secondary btn-sm" onclick="chonThuMucKhoChan()">Chọn thư mục</button>
+            <ul id="listingKhoChan"></ul>
+        </div>
+        <div class="col-4">
+            <h6>Chọn thư mục Kho Lẻ:</h6>
+            <input type="file" id="directoryKhoLe" webkitdirectory directory multiple hidden>
+            <input type="text" style="width: 300px; margin-right: 20px" disabled>
+            <button class="btn btn-secondary btn-sm" onclick="chonThuMucKhoLe()">Chọn thư mục</button>
+            <ul id="listingKhoLe"></ul>
+        </div>
+        <div class="col-4"></div>
+    </div>
+    <button class="btn btn-success mt-5" style="margin-right: 10px" onclick="theodoicungung()">Cập nhật</button>
+</div>

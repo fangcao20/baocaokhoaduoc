@@ -107,6 +107,7 @@
                         <tbody id="bodyDotThau"></tbody>
                     </table>
                 </div>
+                <button class="btn btn-sm btn-success mt-5" style="width: 100px" type="button" onclick="xuatExcell(this)">Xuất Excel</button>
             </div>
             <div id="nhapKetQuaTrungThau" class="navCon" style="display: none">
                 <div class="row">
@@ -114,7 +115,7 @@
                     <table class="table table-borderless table-sm" id="tableNhapThongTinChung">
                         <tr>
                             <td>Mã đợt thầu</td>
-                            <td><select class="form-select" id="slMaDotThau" onchange="changeSlMaDotThau()"></select></td>
+                            <td><select style="width: 100%" class="form-select select2" id="slMaDotThau" onchange="changeSlMaDotThau()"></select></td>
                             <td>Đợt thầu</td>
                             <td><input type="text" id="slDotThau" class="form-control" disabled readonly></td>
                             <td>Giai đoạn</td>
@@ -194,12 +195,85 @@
                 </div>
             </div>
             <div id="baoCaoTongHop" class="navCon" style="display: none">
-                <div class="row">
-
-                </div>
+<!--                <div class="row">-->
+<!--                    <table class="table table-borderless table-sm">-->
+<!--                        <tr>-->
+<!--                            <td>Tên thuốc</td>-->
+<!--                            <td><select multiple="multiple" class="form-select" name="Tên thuốc" id="selectTenThuoc"></select></td>-->
+<!--                            <td>Hoạt chất</td>-->
+<!--                            <td><select class="form-select" name="Hoạt chất" id="selectHoatChat"></select></td>-->
+<!--                            <td>Nhóm Dược lý</td>-->
+<!--                            <td><select class="form-select" name="Nhóm Dược lý" id="selectNhomDuocLy"></select></td>-->
+<!--                            <td>Nhóm Hoá dược</td>-->
+<!--                            <td><select class="form-select" name="Nhóm Hóa dược" id="selectNhomHoaDuoc"></select></td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Hàm lượng</td>-->
+<!--                            <td><select class="form-select" name="Hàm lượng" id="selectHamLuong"></select></td>-->
+<!--                            <td>Đường dùng</td>-->
+<!--                            <td><select class="form-select" name="Đường dùng" id="selectDuongDung"></select></td>-->
+<!--                            <td>Dạng bào chế</td>-->
+<!--                            <td><select class="form-select" name="Dạng bào chế" id="selectDangBaoChe"></select></td>-->
+<!--                            <td>Cơ sở sản xuất</td>-->
+<!--                            <td><select class="form-select" name="Cơ sở sản xuất" id="selectCoSoSanXuat"></select></td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Nước sản xuất</td>-->
+<!--                            <td><select class="form-select" name="Nước sản xuất" id="selectNuocSanXuat"></select></td>-->
+<!--                            <td>Nhà thầu</td>-->
+<!--                            <td><select class="form-select" name="Nhà thầu trúng thầu" id="selectNhaThau"></select></td>-->
+<!--                            <td>Nhóm thầu</td>-->
+<!--                            <td><select class="form-select" name="Nhóm thầu" id="selectNhomThau"></select></td>-->
+<!--                            <td>Gói mua sắm</td>-->
+<!--                            <td><select class="form-select" name="Gói mua sắm" id="selectGoiMuaSam"></select></td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Đợt thầu</td>-->
+<!--                            <td><select class="form-select" name="Đợt thầu" id="selectDotThau"></select></td>-->
+<!--                            <td>Tên Bệnh viện</td>-->
+<!--                            <td><select class="form-select" name="Tên Bệnh viện" id="selectTenBenhVien"></select></td>-->
+<!--                        </tr>-->
+<!--                    </table>-->
+<!--                </div>-->
+<!--                <div class="row">-->
+<!--                    <div style="max-height: 600px; overflow: auto">-->
+<!--                        <table class="table table-hover table-sm table-bordered">-->
+<!--                            <thead>-->
+<!--                            <tr>-->
+<!--                                <th>STT</th>-->
+<!--                                <th>Tên thuốc</th>-->
+<!--                                <th>Hoạt chất</th>-->
+<!--                                <th>Nhóm Dược lý</th>-->
+<!--                                <th>Nhóm Hóa dược</th>-->
+<!--                                <th>SĐK</th>-->
+<!--                                <th>Hàm lượng</th>-->
+<!--                                <th>Đường dùng</th>-->
+<!--                                <th>Dạng bào chế</th>-->
+<!--                                <th>Quy cách đóng gói</th>-->
+<!--                                <th>Đơn vị tính</th>-->
+<!--                                <th>Cơ sở sản xuất</th>-->
+<!--                                <th>Nước sản xuất</th>-->
+<!--                                <th>Nhà thầu trúng thầu</th>-->
+<!--                                <th>Nhóm thầu</th>-->
+<!--                                <th>Gói mua sắm</th>-->
+<!--                                <th>Số lượng</th>-->
+<!--                                <th>Đơn giá</th>-->
+<!--                                <th>Thành tiền</th>-->
+<!--                                <th>Đợt thầu</th>-->
+<!--                                <th>Số QĐ</th>-->
+<!--                                <th>Ngày QĐ</th>-->
+<!--                                <th>Ngày hết hạn</th>-->
+<!--                                <th>Tên Bệnh viện</th>-->
+<!--                            </tr>-->
+<!--                            </thead>-->
+<!--                            <tbody id="tableKQTT"></tbody>-->
+<!--                        </table>-->
+<!--                    </div>-->
+<!--                </div>-->
                 <div style="height: 600px;" class="ag-theme-alpine" id="exampleGrid">
 
                 </div>
+                <button class="btn btn-sm btn-success mt-3" style="width: 150px" type="button" onclick="xuatExcellBCTT()">Xuất Excel</button>
             </div>
         </div>
     </div>

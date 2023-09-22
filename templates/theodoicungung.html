@@ -1,21 +1,162 @@
 <div class="content" id="theoDoiCungUng" style="display: none">
     <div class="row">
-        <div class="col-4">
-            <h6>Chọn thư mục Kho Chẵn:</h6>
-            <input type="file" id="directoryKhoChan" webkitdirectory directory multiple hidden>
-            <input type="text" style="width: 300px; margin-right: 20px" disabled>
-            <button class="btn btn-secondary btn-sm" onclick="chonThuMucKhoChan()">Chọn thư mục</button>
-            <ul id="listingKhoChan"></ul>
+        <div class="col-2">
+            <ul class="nav flex-column" id="navCungUng">
+                <li class="nav-item classDanhMuc" onclick="chonCungUng(1)">
+                    <a class="nav-link active" aria-current="page" href="#" name="">1. Thuốc</a>
+                </li>
+                <li class="nav-item classDanhMuc" onclick="chonCungUng(2)">
+                    <a class="nav-link" href="#" name="">2. Thuốc theo Nhóm thầu</a>
+                </li>
+                <li class="nav-item classDanhMuc" onclick="chonCungUng(3)">
+                    <a class="nav-link" href="#" name="">3. Thuốc theo Nhóm Dược lý</a>
+                </li>
+                <li class="nav-item classDanhMuc" onclick="chonCungUng(4)">
+                    <a class="nav-link" href="#" name="">4. Thuốc theo Nhóm Hóa dược</a>
+                </li>
+                <li class="nav-item classDanhMuc" onclick="chonCungUng(5)">
+                    <a class="nav-link" href="#" name="">5. Cảnh báo tồn kho</a>
+                </li>
+                <li class="nav-item classDanhMuc" onclick="chonCungUng(7)">
+                    <a class="nav-link" href="#" name="">6. Tồn lẻ</a>
+                </li>
+                <li class="nav-item classDanhMuc" onclick="chonCungUng(9)">
+                    <a class="nav-link" href="#" name="">7. Tổng hợp sử dụng theo từng tháng</a>
+                </li>
+            </ul>
         </div>
-        <div class="col-4">
-            <h6>Chọn thư mục Kho Lẻ:</h6>
-            <input type="file" id="directoryKhoLe" webkitdirectory directory multiple hidden>
-            <input type="text" style="width: 300px; margin-right: 20px" disabled>
-            <button class="btn btn-secondary btn-sm" onclick="chonThuMucKhoLe()">Chọn thư mục</button>
-            <ul id="listingKhoLe"></ul>
-        </div>
-        <div class="col-4"></div>
+        <div class="col-10">
+            <div class="cungUng">
+                <div class="row">
+                    <div class="col-2"><h6>Thuốc: </h6></div>
+                    <div class="col-10">
+                        <select style="width: 100%" class="form-select select2" name="" id="selectThuocCungUng"></select>
+                    </div>
+                </div>
+                <div class="row mt-3" style="margin-left: 20px">
+                    <ul>
+                        <li>Tổng kế hoạch: <b><span id="tongKeHoach"></span></b></li>
+                        <li>Đã sử dụng: <b><span id="daSuDung"></span></b></li>
+                        <li>Số lần dự trù còn lại: <b><span id="soLanDuTru"></span></b></li>
+                    </ul>
+                </div>
+                <div class="row">
+                    <div style="max-height: 450px; overflow: auto">
+                        <table class="table table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Ngày nhập kho chẵn</th>
+                                    <th>Nhập kho chẵn</th>
+                                    <th>Tồn kho lẻ</th>
+                                    <th>Trung bình nhập chẵn</th>
+                                    <th>Dự trù còn lại</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableThuoc"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="cungUng">
+                <div class="row">
+                    <div class="col-2"><h6>Hoạt chất: </h6></div>
+                    <div class="col-10">
+                        <select style="width: 100%" class="form-select select2" name="" id="selectHoatChatCungUng"></select>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div style="max-height: 450px; overflow: auto">
+                        <table class="table table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Ngày trúng thầu</th>
+                                    <th>Nhóm thầu</th>
+                                    <th>Thuốc</th>
+                                    <th>Hoạt chất</th>
+                                    <th>Tổng kế hoạch</th>
+                                    <th>Đã sử dụng</th>
+                                    <th>%Sử dụng</th>
+                                    <th>Còn lại</th>
+                                    <th>%Còn lại</th>
+                                    <th>Trung bình nhập chẵn</th>
+                                    <th>Số lần dự trù còn lại</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableNhomThau"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="cungUng">
+                <div class="row">
+                    <div class="col-2"><h6>Nhóm Dược lý: </h6></div>
+                    <div class="col-10">
+                        <select style="width: 100%" class="form-select select2" name="" id="selectNhomDuocLyCungUng"></select>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div style="max-height: 450px; overflow: auto">
+                        <table class="table table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Ngày trúng thầu</th>
+                                    <th>Nhóm thầu</th>
+                                    <th>Thuốc</th>
+                                    <th>Hoạt chất</th>
+                                    <th>Tổng kế hoạch</th>
+                                    <th>Đã sử dụng</th>
+                                    <th>%Sử dụng</th>
+                                    <th>Còn lại</th>
+                                    <th>%Còn lại</th>
+                                    <th>Trung bình nhập chẵn</th>
+                                    <th>Số lần dự trù còn lại</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableDuocLy"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="cungUng">
+                <div class="row">
+                    <div class="col-2"><h6>Nhóm Hóa dược: </h6></div>
+                    <div class="col-10">
+                        <select style="width: 100%" class="form-select select2" name="" id="selectNhomHoaDuocCungUng"></select>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div style="max-height: 450px; overflow: auto">
+                        <table class="table table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Ngày trúng thầu</th>
+                                    <th>Nhóm thầu</th>
+                                    <th>Thuốc</th>
+                                    <th>Hoạt chất</th>
+                                    <th>Tổng kế hoạch</th>
+                                    <th>Đã sử dụng</th>
+                                    <th>%Sử dụng</th>
+                                    <th>Còn lại</th>
+                                    <th>%Còn lại</th>
+                                    <th>Trung bình nhập chẵn</th>
+                                    <th>Số lần dự trù còn lại</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableHoaDuoc"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="cungUng">
+                <div style="height: 600px;" class="ag-theme-alpine" id="gridCanhBao">
+            </div>
+            <div class="cungUng">
+                <div style="height: 600px;" class="ag-theme-alpine" id="gridTonLe">
+            </div>
+            <div class="cungUng">
+                <h6><input type="checkbox" id="checkSuDung" style="margin-right: 5px">Sử dụng hết trong: <input id="limitMonth" type="number" placeholder="12" value="6" min="1" max="12" step="1"> tháng</h6>
+                <div style="height: 600px;" class="ag-theme-alpine" id="gridDivTheoThang">
+                </div>
+            </div>
     </div>
-    <button class="btn btn-success mt-5" style="margin-right: 10px" onclick="theodoicungung()">Cập nhật</button>
-    <button class="btn btn-primary mt-5" onclick="window.open('https://app.powerbi.com/Redirect?action=OpenReport&appId=1c65affd-5446-4174-9262-90365ff9d66f&reportObjectId=1fb9de3d-fdd2-4835-bd6c-54f3253f248f&ctid=eab3c8f8-7488-460f-a2b4-412eaddea8bf&reportPage=ReportSection&pbi_source=appShareLink&portalSessionId=931f9b96-6b69-470a-a1c8-5282f5a3e15e','_blank')">Truy cập Power Bi</button>
 </div>
