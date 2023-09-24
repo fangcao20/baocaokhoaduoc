@@ -2,12 +2,12 @@ import pandas as pd
 import mysql.connector as connector
 from datetime import datetime, timedelta
 
-mydb = connector.connect(user='duocbenh_duocbenh', password='PhuongThao5=))',
-                         host='112.213.89.194',
-                         database='duocbenh_baocaokhoaduoc')
-# mydb = connector.connect(user='root', password='Phiphi05',
-#                          host='localhost',
-#                          database='baocaokhoaduoc')
+# mydb = connector.connect(user='duocbenh_duocbenh', password='PhuongThao5=))',
+#                          host='112.213.89.194',
+#                          database='duocbenh_baocaokhoaduoc')
+mydb = connector.connect(user='root', password='Phiphi05',
+                         host='localhost',
+                         database='baocaokhoaduoc')
 
 
 def capitalize_words(s):
@@ -438,7 +438,7 @@ def mergeDuLieuKho():
                 mycursor.execute('select sum(nhap) from khochan where idThuoc = %s', (idThuoc,))
                 tongSuDung = mycursor.fetchall()[0][0]
                 conLai = tongKeHoach - tongSuDung
-                mycursor.execute('select ton from khole where idThuoc = %s order by ngay desc limit 1', (idThuoc,))
+                mycursor.execute('select ton from khole where idThuoc = %s order by ngay desc limit 25', (idThuoc,))
                 tonLeCuoiCung = mycursor.fetchall()[0][0]
                 mycursor.execute('select nhap from khole where idThuoc = %s and nhap > 0 order by ngay desc limit 1',
                                  (idThuoc,))
@@ -648,27 +648,44 @@ def theoDoiCungUng():
     ketQua['danhsachthau'] = mycursor.fetchall()
 
     mycursor.execute('''
+        WITH LastestDates AS ( SELECT th.idThuoc, MAX(dt.ngayQD) AS maxNgayQD 
+        FROM tonghopthau AS th LEFT JOIN ketquatrungthau AS kq ON kq.idThuoc = th.idThuoc 
+        LEFT JOIN danhmucdotthau AS dt ON dt.idDotThau = kq.idDotThau GROUP BY th.idThuoc ) 
+        
         SELECT
-            DATE_FORMAT(ngayNhapChan, '%Y-%m') as month,
+            DATE_FORMAT(tk.ngay, '%Y-%m') as month,
             t.tenThuoc,
-            SUM(tk.nhapChan) AS nhapChanTheoThang
-        FROM thongkekho as tk
+            SUM(tk.nhap) AS nhapChanTheoThang
+        FROM khochan as tk
         left join danhmucthuoc as t on t.idThuoc = tk.idThuoc
-        GROUP BY tk.idThuoc, DATE_FORMAT(ngayNhapChan, '%Y-%m')
-        ORDER BY tk.idThuoc, STR_TO_DATE(month, '%Y/%m')
+        left join LastestDates as tb on tb.idThuoc = t.idThuoc
+        where tk.nhap > 0
+        GROUP BY tk.idThuoc, DATE_FORMAT(ngay, '%Y-%m')
+        ORDER BY tk.idThuoc, STR_TO_DATE(month, '%Y/%m') 
             ''')
     ketQua['suDungTheoThang'] = mycursor.fetchall()
 
     mycursor.execute('''
-        WITH LastestDates AS ( SELECT th.idThuoc, MAX(dt.ngayQD) AS maxNgayQD 
-        FROM tonghopthau AS th LEFT JOIN ketquatrungthau AS kq ON kq.idThuoc = th.idThuoc 
-        LEFT JOIN danhmucdotthau AS dt ON dt.idDotThau = kq.idDotThau GROUP BY th.idThuoc ) 
-        SELECT t.tenThuoc, hc.hoatChat, kq.soLuong, dt.ngayQD FROM tonghopthau AS th 
-        LEFT JOIN danhmucthuoc AS t ON t.idThuoc = th.idThuoc 
+        WITH LastestDates AS (
+        SELECT th.idThuoc, MAX(dt.ngayQD) AS maxNgayQD 
+        FROM tonghopthau AS th 
         LEFT JOIN ketquatrungthau AS kq ON kq.idThuoc = th.idThuoc 
-        LEFT JOIN danhmuchoatchatbenhvien AS hc ON kq.idHoatChat = hc.idHoatChat 
         LEFT JOIN danhmucdotthau AS dt ON dt.idDotThau = kq.idDotThau 
-        WHERE (th.idThuoc, dt.ngayQD) IN (SELECT idThuoc, maxNgayQD FROM LastestDates);''')
+        GROUP BY th.idThuoc
+    )
+    
+    SELECT
+        t.tenThuoc,
+        hc.hoatChat,
+        SUM(kq.soLuong)
+    FROM tonghopthau AS th 
+    LEFT JOIN danhmucthuoc AS t ON t.idThuoc = th.idThuoc 
+    LEFT JOIN ketquatrungthau AS kq ON kq.idThuoc = th.idThuoc 
+    LEFT JOIN danhmuchoatchatbenhvien AS hc ON kq.idHoatChat = hc.idHoatChat 
+    LEFT JOIN danhmucdotthau AS dt ON dt.idDotThau = kq.idDotThau
+    LEFT JOIN LastestDates AS ld ON th.idThuoc = ld.idThuoc AND dt.ngayQD = ld.maxNgayQD
+    GROUP BY t.tenThuoc, hc.hoatChat
+    ;''')
     ketQua['danhsachthuoc'] = mycursor.fetchall()
 
     mycursor.execute('select * from thongkekho')

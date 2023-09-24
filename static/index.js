@@ -56,6 +56,7 @@ const gridOptions = {
   groupIncludeFooter: true,
   groupIncludeTotalFooter: true,
   animateRows: true,
+  localeText: getLocale(),
 };
 
 function numberFormatter(params) {
@@ -112,8 +113,6 @@ document.addEventListener("DOMContentLoaded", function() {
     new agGrid.Grid(gridDiv, gridOptions);
     var gridDivTheoThang = document.querySelector('#gridDivTheoThang');
     new agGrid.Grid(gridDivTheoThang, gridTheoThang);
-    var gridDivTongHop = document.querySelector('#gridTongHop');
-    new agGrid.Grid(gridDivTongHop, gridTongHop);
     var gridDivCanhBao = document.querySelector('#gridCanhBao');
     new agGrid.Grid(gridDivCanhBao, gridCanhBao);
     var gridDivTonLe = document.querySelector('#gridTonLe');
@@ -698,53 +697,137 @@ function chonCungUng(i) {
     }
 }
 
+function getLocale() {
+    return {
+        filterOoo: 'Lọc...',
+        equals: '=',
+        notEqual: '!=',
+        blank: 'Trống',
+        notBlank: 'Không trống',
+        empty: 'Rỗng',
+
+        // Number Filter
+        lessThan: '<',
+        greaterThan: '>',
+        lessThanOrEqual: '≤',
+        greaterThanOrEqual: '≥',
+        inRange: 'Trong khoảng',
+        inRangeStart: 'Từ',
+        inRangeEnd: 'Tới',
+    }
+}
+
 const gridCanhBao = {
   columnDefs: [
-    { headerName: 'Ngày trúng thầu', field: 'ngayTrungThau', filter: true },
+    { headerName: 'Ngày trúng thầu', field: 'ngayThau', filter: true },
     { headerName: 'Thuốc', field: 'tenThuoc', filter: true },
     { headerName: 'Hoạt chất', field: 'hoatChat', filter: true },
     { headerName: 'Nhóm thầu', field: 'nhomThau', filter: true },
     { headerName: 'Nhóm Dược lý', field: 'nhomDuocLy', filter: true },
     { headerName: 'Nhóm Hóa dược', field: 'nhomHoaDuoc', filter: true },
-    { headerName: 'Tổng kế hoạch', field: 'tongKeHoach', filter: 'agNumberColumnFilter' },
-    { headerName: 'Đã sử dụng', field: 'daSuDung', filter: 'agNumberColumnFilter' },
-    { headerName: '%Sử dụng', field: 'phanTramSuDung', filter: true },
-    { headerName: 'Còn lại', field: 'conLai', filter: 'agNumberColumnFilter' },
-    { headerName: '%Còn lại', field: 'phanTramConLai', filter: true },
+    { headerName: 'Tổng kế hoạch', field: 'tongKeHoach', filter: 'agNumberColumnFilter', valueFormatter: numberFormatter, cellClass: 'ag-right-aligned-cell' },
+    { headerName: 'Tổng sử dụng', field: 'tongSuDung', filter: 'agNumberColumnFilter', valueFormatter: numberFormatter, cellClass: 'ag-right-aligned-cell' },
+    { headerName: '%Sử dụng', field: 'phanTramSuDung', filter: 'agNumberColumnFilter', cellClass: 'ag-right-aligned-cell', valueFormatter: percentageFormat,
+        cellStyle: params => {
+            return {'font-weight': 'bold'}
+        }
+     },
+    { headerName: 'Còn lại', field: 'conLai', filter: 'agNumberColumnFilter', valueFormatter: numberFormatter, cellClass: 'ag-right-aligned-cell' },
+    { headerName: '%Còn lại', field: 'phanTramConLai', filter: 'agNumberColumnFilter', cellClass: 'ag-right-aligned-cell', valueFormatter: percentageFormat,
+        cellStyle: params => {
+            return {'font-weight': 'bold'}
+        }
+    },
   ],
   defaultColDef: {
     flex: 1,
-    minWidth: 100,
+    minWidth: 200,
     resizable: true,
     floatingFilter: true,
     sortable: true,
   },
   animateRows: true,
+  localeText: getLocale(),
 };
 
+function percentageFormat (params) {
+    var num = params.value;
+    if (num) {
+        return `${num}%`;
+    }
+}
 
+function updateCanhBaoTonLe(ketQuaCungUng) {
+    var cols = ['ngayThau', 'tongKeHoach', 'tongSuDung', 'conLai', 'nhapLeCuoiCung', 'tonLeCuoiCung', 'trungBinhNhapChanCuoiCung',
+            'soLanDuTru', 'idThuoc', 'tenThuoc', 'hoatChat', 'nhomDuocLy', 'nhomHoaDuoc', 'nhomThau'];
+    var danhsachthau = ketQuaCungUng.danhsachthau;
+    var rowData = [];
+    for (row of danhsachthau) {
+        var rowDict = {};
+        for (i=0; i<row.length; i++) {
+            rowDict[cols[i]] = row[i];
+        }
+        rowDict['ngayThau'] = formatDate(row[0]);
+        rowDict['phanTramSuDung'] = (rowDict.tongSuDung * 100/rowDict.tongKeHoach).toFixed(2);
+        rowDict['phanTramConLai'] = (rowDict.conLai * 100/rowDict.tongKeHoach).toFixed(2);
+        rowDict['phanTramTonNhap'] = (rowDict.tonLeCuoiCung * 100/rowDict.nhapLeCuoiCung).toFixed(2);
+        rowData.push(rowDict);
+    }
+    gridCanhBao.api.setRowData(rowData);
+    gridTonLe.api.setRowData(rowData);
+}
 
-const gridTheoThang = {
+const gridTonLe = {
   columnDefs: [
+    { headerName: 'Ngày trúng thầu', field: 'ngayThau', filter: true },
+    { headerName: 'Thuốc', field: 'tenThuoc', filter: true },
+    { headerName: 'Hoạt chất', field: 'hoatChat', filter: true },
+    { headerName: 'Nhóm thầu', field: 'nhomThau', filter: true },
+    { headerName: 'Nhóm Dược lý', field: 'nhomDuocLy', filter: true },
+    { headerName: 'Nhóm Hóa dược', field: 'nhomHoaDuoc', filter: true },
+    { headerName: 'Tồn lẻ gần nhất', field: 'tonLeCuoiCung', filter: 'agNumberColumnFilter', valueFormatter: numberFormatter, cellClass: 'ag-right-aligned-cell' },
+    { headerName: 'Nhập lẻ gần nhất', field: 'nhapLeCuoiCung', filter: 'agNumberColumnFilter', valueFormatter: numberFormatter, cellClass: 'ag-right-aligned-cell' },
+    { headerName: '%Tồn/nhập', field: 'phanTramTonNhap', filter: 'agNumberColumnFilter', cellClass: 'ag-right-aligned-cell', valueFormatter: percentageFormat,
+        cellStyle: params => {
+            return {'font-weight': 'bold'}
+        }
+     },
+  ],
+  defaultColDef: {
+    flex: 1,
+    minWidth: 200,
+    resizable: true,
+    floatingFilter: true,
+    sortable: true,
+  },
+  animateRows: true,
+  localeText: getLocale(),
+};
+
+function getColumnDefsTheoThang() {
+    return [
     { headerName: 'Tên thuốc', field: 'tenThuoc', filter: true, minWidth: 300, cellClass: 'ag-left-aligned-cell' },
     { headerName: 'Hoạt chất', field: 'hoatChat', filter: true, minWidth: 300, cellClass: 'ag-left-aligned-cell' },
     { headerName: 'Kế hoạch', field: 'keHoach', minWidth: 150, valueFormatter: numberFormatter },
     { headerName: 'Tổng sử dụng', field: 'tongSuDung', valueFormatter: numberFormatter, minWidth: 150 },
     { headerName: 'Còn lại', field: 'conLai', valueFormatter: numberFormatter, minWidth: 150 },
-    { headerName: '%Còn lại', field: 'phanTramConLai', valueFormatter: numberFormatter, minWidth: 150 },
-    { headerName: 'T3', field: '03', valueFormatter: numberFormatter },
-    { headerName: 'T4', field: '04', valueFormatter: numberFormatter },
-    { headerName: 'T5', field: '05', valueFormatter: numberFormatter },
-    { headerName: 'T6', field: '06', valueFormatter: numberFormatter },
-    { headerName: 'T7', field: '07', valueFormatter: numberFormatter },
-    { headerName: 'T8', field: '08', valueFormatter: numberFormatter },
-    { headerName: 'T9', field: '09', valueFormatter: numberFormatter },
-    { headerName: 'T10', field: '10', valueFormatter: numberFormatter },
-    { headerName: 'T11', field: '11', valueFormatter: numberFormatter },
-    { headerName: 'T12', field: '12', valueFormatter: numberFormatter },
-    { headerName: 'T1', field: '01', valueFormatter: numberFormatter },
-    { headerName: 'T2', field: '02', valueFormatter: numberFormatter },
-  ],
+    { headerName: '%Còn lại', field: 'phanTramConLai', valueFormatter: percentageFormat, minWidth: 150 },
+    { headerName: '03', field: '03', valueFormatter: numberFormatter },
+    { headerName: '04', field: '04', valueFormatter: numberFormatter },
+    { headerName: '05', field: '05', valueFormatter: numberFormatter },
+    { headerName: '06', field: '06', valueFormatter: numberFormatter },
+    { headerName: '07', field: '07', valueFormatter: numberFormatter },
+    { headerName: '08', field: '08', valueFormatter: numberFormatter },
+    { headerName: '09', field: '09', valueFormatter: numberFormatter },
+    { headerName: '10', field: '10', valueFormatter: numberFormatter },
+    { headerName: '11', field: '11', valueFormatter: numberFormatter },
+    { headerName: '12', field: '12', valueFormatter: numberFormatter },
+    { headerName: '01', field: '01N', valueFormatter: numberFormatter },
+    { headerName: '02', field: '02N', valueFormatter: numberFormatter },
+  ]
+}
+const gridTheoThang = {
+  columnDefs: getColumnDefsTheoThang(),
   defaultColDef: {
     flex: 1,
     minWidth: 100,
@@ -759,6 +842,7 @@ const gridTheoThang = {
      }
   },
   animateRows: true,
+  localeText: getLocale(),
 };
 
 function updateSuDungTheoThang(ketQuaCungUng) {
@@ -790,47 +874,54 @@ function updateSuDungTheoThang(ketQuaCungUng) {
         }
    })
 
+    var columnDefs = getColumnDefsTheoThang();
+    var newCols = [];
     var rowData = [];
+
     for (var thuoc of danhsachthuoc) {
         var rowThuoc = {
             'tenThuoc': thuoc[0],
             'hoatChat': thuoc[1],
-            'keHoach': thuoc[2],
-            '01': 0,
-            '02': 0,
-            '03': 0,
-            '04': 0,
-            '05': 0,
-            '06': 0,
-            '07': 0,
-            '08': 0,
-            '09': 0,
-            '10': 0,
-            '11': 0,
-            '12': 0,
+            'keHoach': thuoc[2]
         };
         var sum = 0;
+
         for (var row of suDungTheoThang) {
             if (row[1] == thuoc[0]) {
                 var month = row[0].split('-')[1];
+
                 if (row[0].startsWith(startYear)) {
                     if (!['01', '02'].includes(month)) {
                         rowThuoc[month] = parseInt(row[2]);
                         sum += parseInt(row[2]);
                     }
                 } else if (row[0].startsWith(endYear)) {
-                    if (['01', '02'].includes(month)) {
-                        rowThuoc[month] = parseInt(row[2]);
-                        sum += parseInt(row[2]);
+                    if (!newCols.includes(parseInt(month))) {
+                        newCols.push(parseInt(month));
                     }
+                    rowThuoc[`${month}N`] = parseInt(row[2]);
+                    sum += parseInt(row[2]);
                 }
             }
         }
+
+
         rowThuoc['tongSuDung'] = sum;
         rowThuoc['conLai'] = thuoc[2] - sum;
-        rowThuoc['phanTramConLai'] = `${(rowThuoc['conLai']*100/thuoc[2]).toFixed(2)}%`;
+        rowThuoc['phanTramConLai'] = ((rowThuoc['conLai'] * 100) / thuoc[2]).toFixed(2);
         rowData.push(rowThuoc);
     }
+    var maxMonth = Math.max(...newCols);
+
+    for (var i = 3; i <= maxMonth; i++) {
+        var col = i.toString().padStart(2, '0');
+        columnDefs.push({
+            headerName: col,
+            field: `${col}N`,
+            valueFormatter: numberFormatter
+        });
+    }
+    gridTheoThang.api.setColumnDefs(columnDefs);
     gridTheoThang.api.setRowData(rowData);
 }
 
@@ -898,8 +989,8 @@ function updateLimitThang(ketQuaCungUng, monthNum) {
     gridTheoThang.api.setRowData(rowData);
 }
 
-
 function hienThiKetQuaCungUng(ketQuaCungUng) {
+    updateCanhBaoTonLe(ketQuaCungUng);
     updateSuDungTheoThang(ketQuaCungUng);
     var slThuoc = document.getElementById('selectThuocCungUng');
     var slHoatChat = document.getElementById('selectHoatChatCungUng');
@@ -912,37 +1003,9 @@ function hienThiKetQuaCungUng(ketQuaCungUng) {
     slNhomDuocLy.innerHTML = setOptions(11, danhsachthau);
     slNhomHoaDuoc.innerHTML = setOptions(12, danhsachthau);
 
-    var htmlConLai = '';
-    var htmlSuDung = '';
-    var htmlTonLe = '';
-    var htmlTonLeLon = '';
-    var htmlTongHop = '';
-    for (let row of danhsachthau) {
-        if (row[2]/row[1] <= 0.1) {
-            htmlSuDung += conLaivaSuDung(row);
-        }
-        if (row[3]/row[1] <= 0.1) {
-            htmlConLai += conLaivaSuDung(row);
-        }
-        if (row[5]/row[4] <= 0.1) {
-            htmlTonLe += tonLe(row);
-        }
-        if (row[5]/row[4] > 0.1) {
-            htmlTonLeLon += tonLe(row);
-        }
-    }
-    document.getElementById('tableConLai').innerHTML = htmlConLai;
-    document.getElementById('tableSuDung').innerHTML = htmlSuDung;
-    document.getElementById('tableTonLe').innerHTML = htmlTonLe;
-    document.getElementById('tableTonLeLon').innerHTML = htmlTonLeLon;
-
     sortTable(document.getElementById('tableNhomThau').parentElement);
     sortTable(document.getElementById('tableDuocLy').parentElement);
     sortTable(document.getElementById('tableHoaDuoc').parentElement);
-    sortTable(document.getElementById('tableConLai').parentElement);
-    sortTable(document.getElementById('tableSuDung').parentElement);
-    sortTable(document.getElementById('tableTonLe').parentElement);
-    sortTable(document.getElementById('tableTonLeLon').parentElement);
 
     var thongkekho = ketQuaCungUng['thongkekho'];
     $('#selectThuocCungUng').on('change', function () {
